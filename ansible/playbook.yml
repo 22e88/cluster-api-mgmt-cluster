@@ -1,0 +1,133 @@
+---
+- name: create a KinD cluster and add Cluster-API extensions to it 
+  hosts: mgmtcp0
+
+  tasks: 
+    - name: prepare directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/
+        state: directory
+        mode: '0755'
+
+    - name: download signing key for Docker repo
+      ansible.builtin.command:
+        cmd: curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
+        
+    - name: add file for Docker repository
+      ansible.builtin.lineinfile:
+        state: present
+        create: true
+        path: /etc/apt/sources.list.d/docker.list
+        line: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian   bookworm stable"
+
+
+    - name: download Google Cloud public signing key for Kubernetes repository
+      ansible.builtin.get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key 
+        # dest: /etc/apt/trusted.gpg.d/kubernetes-repo.gpg
+        dest: /tmp/kubernetes-repo.gpg
+        mode: '0644'
+        force: true
+    
+    - name: and convert it to the current gpg format
+      ansible.builtin.command: 
+        cmd: gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes-apt-keyring.gpg /tmp/kubernetes-repo.gpg
+
+    - name: add repository for Kubernetes 
+      ansible.builtin.apt_repository:
+        update_cache: true
+        repo: deb https://pkgs.k8s.io/core:/stable:/v1.30/deb/ / 
+        state: present
+        filename: kubernetes
+
+    - name: install packages
+      ansible.builtin.apt:
+        state: present
+        update_cache: true
+        pkg:
+          - net-tools
+          - vim
+          - ipcalc
+          - tmux
+          - ca-certificates
+          - curl
+          - docker-ce 
+          - docker-ce-cli 
+          - containerd.io 
+          - docker-buildx-plugin 
+          - docker-compose-plugin
+          - kubectl
+          - golang
+    
+    - name: add kubectl auto-completion and 'k' alias
+      ansible.builtin.blockinfile:
+        path: /root/.bashrc
+        create: true
+        backup: true
+        block: |
+          source <(kubectl completion bash)
+          alias k=kubectl
+          complete -o default -F __start_kubectl k
+    
+    - name: add baseline vim configuration
+      ansible.builtin.blockinfile:
+        path: /root/.vimrc
+        create: true
+        backup: true
+        block: |
+          set tabstop=2
+          set expandtab
+          set shiftwidth=2
+          set hls
+          set nu
+          set ic
+          set bg=dark
+
+    - name: install KinD
+      ansible.builtin.command:
+        cmd: go install sigs.k8s.io/kind@v0.23.0
+
+    - name: adapt Go path
+      ansible.builtin.lineinfile:
+        state: present
+        path: /root/.bashrc
+        line: 'export PATH="$PATH:/root/go/bin"'
+
+    - name: download clusterctl binary
+      ansible.builtin.command: 
+        cmd: curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.7.3/clusterctl-linux-amd64 -o clusterctl
+
+    - name: install clusterctl
+      ansible.builtin.command:
+        cmd: install -m 0755 clusterctl /usr/local/bin/clusterctl
+
+    - name: download Helm
+      ansible.builtin.command:
+        cmd: wget https://get.helm.sh/helm-v3.15.2-linux-amd64.tar.gz  
+
+    - name: unpack Helm 
+      ansible.builtin.command:
+        cmd: tar xvzf helm-v3.15.2-linux-amd64.tar.gz 
+
+    - name: install Helm
+      ansible.builtin.command:
+        cmd: mv linux-amd64/helm /usr/local/bin/
+
+    - name: create KinD cluster
+      ansible.builtin.command:
+        cmd: kind create cluster
+
+    - name: turn KinD cluster into a Cluster-API cluster
+      ansible.builtin.command:
+        cmd: clusterctl init --core cluster-api --bootstrap kubeadm --control-plane kubeadm --infrastructure hetzner
+
+    - name: insert HCLOUD_TOKEN of target project as secret into the KinD cluster
+      ansible.builtin.command:
+        cmd: kubectl create secret generic hetzner --from-literal=hcloud=$HCLOUD_TOKEN 
+
+    - name: patch secret to make optional migration of Cluster-API objects from KinD to a 'real management cluster' possible
+      ansible.builtin.command:
+        cmd: kubectl patch secret hetzner -p '{"metadata":{"labels":{"clusterctl.cluster.x-k8s.io/move":""}}}'
+
+
+
