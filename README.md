@@ -45,7 +45,7 @@ and has to have network access to the Hetzner HCloud API
   * CI_HCLOUD_TOKEN: the API token to access your HCloud project
   * CI_PUBKEY_FPR: the fingerprint of the (public) key you stored in your HCloud project
 * choose / enable a Gitlab runner for your project as described above
-* check out this repo
+* check out this repo https://gitlab.com/22e88/cluster-api-mgmt-cluster.git
 * adapt the 'tag:' setting in .gitlab-ci.yml so that the runner you choosed is executing  
 your pipeline 
 * push this code to your Gitlab repo
