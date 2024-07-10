@@ -9,7 +9,7 @@ stages:
 
 create-mgmt-cluster:
   stage: create
-  # when: manual
+  when: manual
   script:
     - echo 'hello test'
     - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN
