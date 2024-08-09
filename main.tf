@@ -13,7 +13,7 @@ resource "hcloud_firewall" "myfirewall" {
 }
 
 resource "hcloud_network" "project_private_network" {
-  name     = " Project Private Network"
+  name     = "Project Private Network"
   ip_range = "10.0.0.0/16"
 }
 
