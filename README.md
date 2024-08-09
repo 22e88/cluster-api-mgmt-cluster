@@ -68,5 +68,5 @@ HCloud project and so on.
 
 ## References / Links
 
-<https://cluster-api.sigs.k8s.io/introduction>
-<https://github.com/syself/cluster-api-provider-hetzner>
+[Cluster-API](https://cluster-api.sigs.k8s.io/introduction)
+[cluster-api-provider-hetzner](https://github.com/syself/cluster-api-provider-hetzner)
