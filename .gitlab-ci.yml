@@ -9,20 +9,20 @@ stages:
 
 create-mgmt-cluster:
   stage: create
-  when: manual
+  # when: manual
   script:
     - terraform version
-    # - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN
-    # - export TF_VAR_pubkey_fpr=$CI_PUBKEY_FPR
-    # - cp $CI_BETA_LAB_PRIV_KEY ~/.ssh/id_ed25519
-    # - chmod 0400 ~/.ssh/id_ed25519
-    # - ls -la ~/.ssh/ 
-    # - cat ~/.ssh/id_ed25519
-    # - terraform init
-    # - terraform plan 
-    # - terraform apply --auto-approve
-    # - export ANSIBLE_HOST_KEY_CHECKING=False
-    # - export ANSIBLE_REMOTE_USER=root
-    # - cat ansible/inventory/hosts.yaml 
-    # - ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbook.yml
-    #
+    - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN
+    - export TF_VAR_pubkey_fpr=$CI_PUBKEY_FPR
+    - cp $CI_BETA_LAB_PRIV_KEY ~/.ssh/id_ed25519
+    - chmod 0400 ~/.ssh/id_ed25519
+    - ls -la ~/.ssh/ 
+    - cat ~/.ssh/id_ed25519
+    - terraform init
+    - terraform plan 
+    - terraform apply --auto-approve
+    - export ANSIBLE_HOST_KEY_CHECKING=False
+    - export ANSIBLE_REMOTE_USER=root
+    - cat ansible/inventory/hosts.yaml 
+    - ansible-playbook -i ansible/inventory/hosts.yaml ansible/playbook.yml
+
