@@ -1,6 +1,8 @@
 ---
 - name: create a KinD cluster and add Cluster-API extensions to it 
   hosts: mgmtcp0
+  vars: 
+    TOKEN: "{{ lookup('env', 'HCLOUD_TOKEN') }}"
 
   tasks: 
     - name: prepare directory
@@ -123,7 +125,8 @@
 
     - name: insert HCLOUD_TOKEN of target project as secret into the KinD cluster
       ansible.builtin.command:
-        cmd: kubectl create secret generic hetzner --from-literal=hcloud="$HCLOUD_TOKEN"
+        # cmd: kubectl create secret generic hetzner --from-literal=hcloud="$HCLOUD_TOKEN"
+        cmd: kubectl create secret generic hetzner --from-literal=hcloud="$TOKEN"
 
     - name: patch secret to make optional migration of Cluster-API objects from KinD to a 'real management cluster' possible
       ansible.builtin.command:
