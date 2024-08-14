@@ -12,7 +12,7 @@ create-mgmt-cluster:
   when: manual
   script:
     - echo 'hello test'
-    - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN
+    - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN_DEV
     - export TF_VAR_pubkey_fpr=$CI_PUBKEY_FPR
     - cp $CI_BETA_LAB_PRIV_KEY ~/.ssh/id_ed25519
     - chmod 0400 ~/.ssh/id_ed25519
