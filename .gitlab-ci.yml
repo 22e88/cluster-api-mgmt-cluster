@@ -24,5 +24,6 @@ create-mgmt-cluster:
     - export ANSIBLE_HOST_KEY_CHECKING=False
     - export ANSIBLE_REMOTE_USER=root
     - cat ansible/inventory/hosts.yaml 
-    - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
+    - echo "HCLOUD_TOKEN is set to: ${HCLOUD_TOKEN}"
+    # - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
 
