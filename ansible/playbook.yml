@@ -1,8 +1,6 @@
 ---
 - name: create a KinD cluster and add Cluster-API extensions to it 
   hosts: mgmtcp0
-  # vars: 
-  #   TOKEN: "{{ lookup('env', 'HCLOUD_TOKEN') }}"
 
   tasks: 
     - name: prepare directory
