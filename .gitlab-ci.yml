@@ -7,6 +7,8 @@ default:
 stages:
   - create
 
+# - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
+
 create-mgmt-cluster:
   stage: create
   when: manual
@@ -25,5 +27,4 @@ create-mgmt-cluster:
     - export ANSIBLE_REMOTE_USER=root
     - cat ansible/inventory/hosts.yaml 
     - echo "HCLOUD_TOKEN is set to: ${HCLOUD_TOKEN}"
-    # - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
 
