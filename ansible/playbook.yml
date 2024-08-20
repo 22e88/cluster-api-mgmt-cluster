@@ -58,6 +58,7 @@
           - docker-compose-plugin
           - kubectl
           - golang
+          - git
     
     - name: add kubectl auto-completion and 'k' alias
       ansible.builtin.blockinfile:
