@@ -43,3 +43,4 @@ create-workload-cluster:
     - export ANSIBLE_REMOTE_USER=root
     - cat ansible/inventory/hosts.yaml 
     - ansible -m ping -i ansible/inventory/hosts.yaml all  
+    - ansible-playbook -i ansible/inventory/hosts.yaml ansible/create-workload-cluster.yml

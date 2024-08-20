@@ -1,0 +1,28 @@
+---
+- name: create workload cluster using the KinD management cluster 
+  hosts: mgmtcp0
+
+  # The following environment settings define the base configuration of the 
+  # workload cluster to be created:
+  # NOTE: HCLOUD_REGION has to be the same as the region of mgmtcp0 
+  environment:
+    HCLOUD_SSH_KEY="noroot@d1"
+    CLUSTER_NAME="teclu1"
+    HCLOUD_REGION="hel1"
+    CONTROL_PLANE_MACHINE_COUNT=1
+    WORKER_MACHINE_COUNT=1
+    KUBERNETES_VERSION=1.29.4
+    HCLOUD_CONTROL_PLANE_MACHINE_TYPE=cpx31
+    HCLOUD_WORKER_MACHINE_TYPE=cpx31
+    SSH_KEY_NAME="noroot@d1" 
+
+  tasks: 
+    - name: create config yaml for workload cluster object
+      ansible.builtin.command:
+        cmd: clusterctl generate cluster teclu1 > teclu1.yaml    
+
+    - name: apply workload cluster yaml to KinD management cluster
+      ansible.builtin.command:
+        cmd: kubectl apply -f teclu1.yaml
+
+
