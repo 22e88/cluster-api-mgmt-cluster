@@ -1,0 +1,70 @@
+---
+- name: create workload cluster using the KinD management cluster 
+  hosts: mgmtcp0
+
+  # The following environment settings define the base configuration of the 
+  # workload cluster to be created:
+  # NOTE: HCLOUD_REGION has to be the same as the region of mgmtcp0 
+  environment:
+    HCLOUD_SSH_KEY: noroot@d1
+    CLUSTER_NAME: teclu1
+    HCLOUD_REGION: hel1
+    CONTROL_PLANE_MACHINE_COUNT: 1
+    WORKER_MACHINE_COUNT: 1
+    KUBERNETES_VERSION: 1.29.4
+    HCLOUD_CONTROL_PLANE_MACHINE_TYPE: cpx31
+    HCLOUD_WORKER_MACHINE_TYPE: cpx31
+    SSH_KEY_NAME: noroot@d1 
+
+  tasks: 
+    - name: add Cilium Helm repo on mgmtcp0
+      kubernetes.core.helm_repository:
+        name: cilium
+        repo_url: "https://helm.cilium.io/"
+
+    - name: add Syself Helm repo on mgmtcp0
+      kubernetes.core.helm_repository:
+        name: syself
+        repo_url: "https://charts.syself.com/"
+
+    - name: create directory for CAPH project
+      ansible.builtin.file:
+        state: directory
+        path: cluster-api-provider-hetzner 
+
+      # later on we need a cilium.yaml file, which currently can be found
+      # in Syself's cluster-api-provider-hetzner project, therefor we download
+      # that project:
+    - name: git clone Syself's cluster-api-provider-hetzner project
+      ansible.builtin.git:
+        repo: https://github.com/syself/cluster-api-provider-hetzner.git
+        dest: cluster-api-provider-hetzner
+
+    - name: create config yaml for workload cluster object
+      ansible.builtin.shell: clusterctl generate cluster teclu1 > teclu1.yaml    
+
+    - name: apply workload cluster yaml to KinD management cluster
+      ansible.builtin.command:
+        cmd: kubectl apply -f teclu1.yaml
+
+    - name: wait for workload cluster objects to be created in HCloud
+      ansible.builtin.wait_for:
+        timeout: 120
+      delegate_to: localhost
+
+    - name: get KUBECONFIG of workload cluster
+      ansible.builtin.shell:
+        cmd: clusterctl get kubeconfig teclu1 > teclu1.kubeconfig
+
+    - name: fix permissions of kubeconfig file to prevent Ansible from error exit
+      ansible.builtin.file:
+        path: teclu1.kubeconfig
+        mode: '0600'
+
+    - name: install Cilium to workload cluster
+      ansible.builtin.shell: 
+        cmd: KUBECONFIG=./teclu1.kubeconfig helm upgrade --install cilium cilium/cilium --version 1.14.4 --namespace kube-system -f cluster-api-provider-hetzner/templates/cilium/cilium.yaml
+
+    - name: install HCloud CCM to workload cluster
+      ansible.builtin.shell:
+        cmd: KUBECONFIG=./teclu1.kubeconfig helm upgrade --install ccm syself/ccm-hcloud --version 1.0.11 --namespace kube-system --set secret.name=hetzner --set secret.tokenKeyName=hcloud --set privateNetwork.enabled=false
