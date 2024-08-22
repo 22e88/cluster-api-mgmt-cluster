@@ -29,29 +29,29 @@ create-mgmt-cluster:
       - ansible/inventory/hosts.yaml
 
 
-create-workload-cluster:
-  stage: workload_cluster
-  when: manual
-  script:
-    - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
-    - chmod 0400 ~/.ssh/id_ed25519
-    - export ANSIBLE_HOST_KEY_CHECKING=False
-    - export ANSIBLE_REMOTE_USER=root
-    - cat ansible/inventory/hosts.yaml 
-    - ansible -m ping -i ansible/inventory/hosts.yaml all  
-    - ansible-playbook -i ansible/inventory/hosts.yaml ansible/create-workload-cluster.yml
-
-delete-workload-cluster:
-  stage: workload_cluster
-  when: manual
-  script: 
-    - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
-    - chmod 0400 ~/.ssh/id_ed25519
-    - export ANSIBLE_HOST_KEY_CHECKING=False
-    - export ANSIBLE_REMOTE_USER=root
-    - cat ansible/inventory/hosts.yaml 
-    - ansible -m ping -i ansible/inventory/hosts.yaml all  
-
+# create-workload-cluster:
+#   stage: workload_cluster
+#   when: manual
+#   script:
+#     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
+#     - chmod 0400 ~/.ssh/id_ed25519
+#     - export ANSIBLE_HOST_KEY_CHECKING=False
+#     - export ANSIBLE_REMOTE_USER=root
+#     - cat ansible/inventory/hosts.yaml 
+#     - ansible -m ping -i ansible/inventory/hosts.yaml all  
+#     - ansible-playbook -i ansible/inventory/hosts.yaml ansible/create-workload-cluster.yml
+#
+# delete-workload-cluster:
+#   stage: workload_cluster
+#   when: manual
+#   script: 
+#     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
+#     - chmod 0400 ~/.ssh/id_ed25519
+#     - export ANSIBLE_HOST_KEY_CHECKING=False
+#     - export ANSIBLE_REMOTE_USER=root
+#     - cat ansible/inventory/hosts.yaml 
+#     - ansible -m ping -i ansible/inventory/hosts.yaml all  
+#
 
 
 
