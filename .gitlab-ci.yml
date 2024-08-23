@@ -5,12 +5,11 @@ default:
     - d1-for-hcloud
 
 stages:
-  - management_cluster_KinD
-  - workload_cluster
+  - create
 
 
 create-mgmt-cluster:
-  stage: management_cluster_KinD
+  stage: create
   when: manual
   script:
     - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN_STAGE
@@ -23,36 +22,7 @@ create-mgmt-cluster:
     - export ANSIBLE_HOST_KEY_CHECKING=False
     - export ANSIBLE_REMOTE_USER=root
     - cat ansible/inventory/hosts.yaml 
-    - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
+    - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/create-mgmt-cluster.yml
   artifacts:
     paths:
       - ansible/inventory/hosts.yaml
-
-
-# create-workload-cluster:
-#   stage: workload_cluster
-#   when: manual
-#   script:
-#     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
-#     - chmod 0400 ~/.ssh/id_ed25519
-#     - export ANSIBLE_HOST_KEY_CHECKING=False
-#     - export ANSIBLE_REMOTE_USER=root
-#     - cat ansible/inventory/hosts.yaml 
-#     - ansible -m ping -i ansible/inventory/hosts.yaml all  
-#     - ansible-playbook -i ansible/inventory/hosts.yaml ansible/create-workload-cluster.yml
-#
-# delete-workload-cluster:
-#   stage: workload_cluster
-#   when: manual
-#   script: 
-#     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
-#     - chmod 0400 ~/.ssh/id_ed25519
-#     - export ANSIBLE_HOST_KEY_CHECKING=False
-#     - export ANSIBLE_REMOTE_USER=root
-#     - cat ansible/inventory/hosts.yaml 
-#     - ansible -m ping -i ansible/inventory/hosts.yaml all  
-#
-
-
-
-
