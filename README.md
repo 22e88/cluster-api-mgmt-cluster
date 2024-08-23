@@ -1,30 +1,28 @@
 # Cluster-API-mgmt-cluster
 
-* create a KinD based, Cluster-API Kubernetes management cluster
-  on some cloud / baremetal provider's infrastructure.
-* create a workload cluster using the KinD management cluster
+Create a KinD ('Kubernetes in Docker') based, Cluster-API *management cluster*
+on some cloud / baremetal provider's infrastructure.
 
-This is done by Gitlab CI/CD pipeline jobs which can (currently have to) be 
-manually executed.
+This is done by Gitlab CI/CD pipeline jobs. 
+The management cluster can then be accessed by ssh to do all kind of stuff
+(eg. test Cluster-API, create and maintain workload clusters etc).
 
-The management cluster can then also be accessed by ssh to do all kind of stuff
-(create and maintain workload clusters etc), and of course the workload cluster
-machines are accessible by ssh, too.
+AUTOMATED creation and maintenance of *workload clusters* itself now has moved 
+to a distinct Gitlab project: 
+[https://gitlab.com/22e88/cluster-api-workload-cluster](https://gitlab.com/22e88/cluster-api-workload-cluster)
+Both projects work together, see CHANGELOG and description below for details.
 
-## Currently Implemented
-
+## Currently Implemented Infrastructure Providers
 * Hetzner HCloud
-* (maybe other infrastructure providers will follow)
+* (maybe others will follow)
 
 ## Overview
-A job in the CI/CD pipeline creates the management cluster using Terraform and
-Ansible.
+A job in the CI/CD pipeline creates the *management cluster* using Terraform and
+Ansible. The Ansible inventory necessary to access the cluster is stored as 
+an artifact in Gitlab. This will be used later by the *workload-cluster* project. 
 
-Another job uses the management cluster to create a workload cluster in the
-same project.
-
-Afterwards, you can access both clusters by SSH and do whatever you like (create 
-maintain / destroy workload clusters, play around with Cluster-API ...).
+The *management cluster* as well as the *workload clusters* can be accessed by
+SSH using a key of your choice. 
 
 You are expected to clean up / take care of your Cloud project for yourself, 
 the pipeline only creates the clusters, it does not care about further 
@@ -79,13 +77,11 @@ basically turning this 'KinD' cluster into a Cluster-API management cluster.
 'clusterctl' gets executed to prepare that 'KinD' cluster to interact with the
 Hetzner HCLoud infrastructures.
 
-In a second job, a workload cluster gets created by the management cluster. The
-specifications of the workload cluster (number of controlplanes, workers, 
-Kubernetes version etc.) currently can be defined as variables in the playbook
-create-workload-cluster.yml.
-
+If you want to AUTOMATICALLY create *workload clusters* by using this 
+*management cluster*, see CHANGELOG resp. the [cluster-api-workload-cluster project](https://gitlab.com/22e88/cluster-api-workload-cluster)
 ## References / Links
 
+* https://gitlab.com/22e88/cluster-api-workload-cluster
 * https://cluster-api.sigs.k8s.io/introduction
 * https://github.com/syself/cluster-api-provider-hetzner
 

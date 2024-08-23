@@ -5,42 +5,24 @@ default:
     - d1-for-hcloud
 
 stages:
-  - create_kind
-  - create_cluster
+  - create
 
 
 create-mgmt-cluster:
-  stage: create_kind
+  stage: create
   when: manual
   script:
     - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN_PROD
     - export TF_VAR_pubkey_fpr=$CI_PUBKEY_FPR
     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
     - chmod 0400 ~/.ssh/id_ed25519
-    - ls -la ~/.ssh/ 
-    - cat ~/.ssh/id_ed25519
     - terraform init
     - terraform plan 
     - terraform apply --auto-approve
     - export ANSIBLE_HOST_KEY_CHECKING=False
     - export ANSIBLE_REMOTE_USER=root
     - cat ansible/inventory/hosts.yaml 
-    - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/playbook.yml
+    - ansible-playbook -i ansible/inventory/hosts.yaml -e "HCLOUD_TOKEN=${HCLOUD_TOKEN}" ansible/create-mgmt-cluster.yml
   artifacts:
     paths:
       - ansible/inventory/hosts.yaml
-
-
-create-workload-cluster:
-  stage: create_cluster
-  when: manual
-  script:
-    - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
-    - chmod 0400 ~/.ssh/id_ed25519
-    - ls -la ~/.ssh/ 
-    - cat ~/.ssh/id_ed25519
-    - export ANSIBLE_HOST_KEY_CHECKING=False
-    - export ANSIBLE_REMOTE_USER=root
-    - cat ansible/inventory/hosts.yaml 
-    - ansible -m ping -i ansible/inventory/hosts.yaml all  
-    - ansible-playbook -i ansible/inventory/hosts.yaml ansible/create-workload-cluster.yml
