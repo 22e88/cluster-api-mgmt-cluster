@@ -8,8 +8,8 @@ The management cluster can then be accessed by ssh to do all kind of stuff
 (eg. test Cluster-API, create and maintain workload clusters etc).
 
 AUTOMATED creation and maintenance of *workload clusters* itself now has moved 
-to a distinct Gitlab project: 
-[https://gitlab.com/22e88/cluster-api-workload-cluster](https://gitlab.com/22e88/cluster-api-workload-cluster)
+to a distinct Gitlab project [here](https://gitlab.com/22e88/cluster-api-workload-cluster)
+
 Both projects work together, see CHANGELOG and description below for details.
 
 ## Currently Implemented Infrastructure Providers
@@ -23,10 +23,6 @@ an artifact in Gitlab. This will be used later by the *workload-cluster* project
 
 The *management cluster* as well as the *workload clusters* can be accessed by
 SSH using a key of your choice. 
-
-You are expected to clean up / take care of your Cloud project for yourself, 
-the pipeline only creates the clusters, it does not care about further 
-lifecycle management of anything in your Cloud environment.
 
 You are expected to clean up / take care of your Cloud project for yourself,
 the pipeline only creates the management cluster, it does not care about
