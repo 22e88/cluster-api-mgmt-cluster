@@ -1,3 +1,11 @@
-There was a problem in storing the HCloud token as a secret in the KinD
-management cluster node. This is fixed in v0.0.4 (main), in dev and stage
-even earlier.
+* 20240823: Creation, maintenance and deletion of workload-clusters now has
+  moved to [this project](https://gitlab.com/22e88/cluster-api-workload-cluster)
+  That way it is easier and faster to develop and test features in each area.
+  The workload-cluster project uses the latest management cluster which has
+  been created in the management-cluster project. It does this by downloading
+  an artifact from the management-cluster project, which holds the required 
+  information how to reach that management-cluster (currently Ansible inventory
+  file) 
+* 20240816: There was a problem in storing the HCloud token as a secret in the KinD
+  management cluster node. This is fixed in v0.0.4 (main), in dev and stage
+  even earlier.
