@@ -12,7 +12,7 @@ create-mgmt-cluster:
   stage: create
   when: manual
   script:
-    - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN_PROD
+    - export HCLOUD_TOKEN=$CI_HCLOUD_TOKEN_STAGE
     - export TF_VAR_pubkey_fpr=$CI_PUBKEY_FPR
     - cp $CI_BETA_PRIV_KEY ~/.ssh/id_ed25519
     - chmod 0400 ~/.ssh/id_ed25519
