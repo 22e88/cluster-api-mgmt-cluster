@@ -13,7 +13,7 @@ variable "image" {
 variable "server_type" {
   type = string
   description = "server type"
-  default = "cx21"
+  default = "cx22"
 }
 
 variable "pubkey_fpr" {
