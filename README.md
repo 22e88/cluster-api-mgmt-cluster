@@ -1,16 +1,19 @@
 # Cluster-API-mgmt-cluster
 
-Create a KinD ('Kubernetes in Docker') based, Cluster-API *management cluster*
+Create a KinD ('Kubernetes in Docker') based, Cluster-API *MANAGEMENT cluster*
 on some cloud / baremetal provider's infrastructure.
 
 This is done by Gitlab CI/CD pipeline jobs. 
-The management cluster can then be accessed by ssh to do all kind of stuff
-(eg. test Cluster-API, create and maintain workload clusters etc).
+The MANAGEMENT cluster can then be accessed by ssh to do all kind of stuff
+(eg. test Cluster-API, create and maintain WORKLOAD clusters manually etc).
 
-AUTOMATED creation and maintenance of *workload clusters* itself now has moved 
-to a distinct Gitlab project [here](https://gitlab.com/22e88/cluster-api-workload-cluster)
+AUTOMATED creation and maintenance of *WORKLOAD clusters* itself, by utilizing
+a MANAGEMENT cluster created by this project, now has moved 
+to it's own Gitlab project: [https://gitlab.com/22e88/cluster-api-workload-cluster](https://gitlab.com/22e88/cluster-api-workload-cluster)
 
-Both projects work together, see CHANGELOG and description below for details.
+Both projects are intended to be used together, they just have been split for better
+better separation ('small parts, loose coupling... :)'). 
+See CHANGELOG and description below for details.
 
 ## Currently Implemented Infrastructure Providers
 * Hetzner HCloud
