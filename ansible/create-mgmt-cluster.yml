@@ -124,13 +124,11 @@
 
     - name: insert HCLOUD_TOKEN of target project as secret into the KinD cluster
       ansible.builtin.command:
-        # cmd: kubectl create secret generic hetzner --from-literal=hcloud="{{ HCLOUD_TOKEN }}"
-        cmd: kubectl create secret generic hcloud --from-literal=token="{{ HCLOUD_TOKEN }}"
+        cmd: kubectl create secret generic hetzner --from-literal=hcloud="{{ HCLOUD_TOKEN }}"
 
     - name: patch secret to make optional migration of Cluster-API objects from KinD to a 'real management cluster' possible
       ansible.builtin.command:
-        # cmd: kubectl patch secret hetzner -p '{"metadata":{"labels":{"clusterctl.cluster.x-k8s.io/move":""}}}'
-        cmd: kubectl patch secret hcloud -p '{"metadata":{"labels":{"clusterctl.cluster.x-k8s.io/move":""}}}'
+        cmd: kubectl patch secret hetzner -p '{"metadata":{"labels":{"clusterctl.cluster.x-k8s.io/move":""}}}'
 
 
 
