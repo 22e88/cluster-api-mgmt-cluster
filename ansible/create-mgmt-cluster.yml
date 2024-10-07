@@ -59,6 +59,7 @@
           - kubectl
           - golang
           - git
+          - python3-kubernetes
     
     - name: add kubectl auto-completion and 'k' alias
       ansible.builtin.blockinfile:
