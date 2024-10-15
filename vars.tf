@@ -1,7 +1,7 @@
 variable "location" {
   type        = string
   description = "Which Hetzner location to use"
-  default     = "hel1"
+  default     = "fsn1"
 }
 
 variable "image" {
