@@ -87,7 +87,7 @@
 
     - name: install KinD
       ansible.builtin.command:
-        cmd: go install sigs.k8s.io/kind@v0.23.0
+        cmd: go install sigs.k8s.io/kind@v0.25.0
 
     - name: adapt Go path
       ansible.builtin.lineinfile:
@@ -97,7 +97,9 @@
 
     - name: download clusterctl binary
       ansible.builtin.command: 
-        cmd: curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.7.3/clusterctl-linux-amd64 -o clusterctl
+        # cmd: curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.7.3/clusterctl-linux-amd64 -o clusterctl
+        cmd: curl -L https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.8.4/clusterctl-linux-amd64 -o clusterctl
+
 
     - name: install clusterctl
       ansible.builtin.command:
@@ -121,7 +123,8 @@
 
     - name: turn KinD cluster into a Cluster-API cluster
       ansible.builtin.command:
-        cmd: clusterctl init --core cluster-api --bootstrap kubeadm --control-plane kubeadm --infrastructure hetzner
+        # cmd: clusterctl init --core cluster-api --bootstrap kubeadm --control-plane kubeadm --infrastructure hetzner
+        cmd: clusterctl init --core cluster-api --bootstrap kubeadm --control-plane kubeadm --infrastructure hetzner:v1.0.0
 
     - name: insert HCLOUD_TOKEN of target project as secret into the KinD cluster
       ansible.builtin.command:
